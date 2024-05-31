@@ -22,7 +22,7 @@ class Args:
 
     def GetArgs(self) -> None:
         PARSER = argparse.ArgumentParser()
-        PARSER.add_argument('--msa', type=str, help='input MSA in Phylp/Fasta/Nexus/Clustal format', required=True)
+        PARSER.add_argument('--msa', type=str, help='input MSA in Phylip/Fasta/Nexus/Clustal format', required=True)
         PARSER.add_argument('--init-trees', type=int, help='the number of initial trees generated', default=100, required=False)
         PARSER.add_argument('--mp-trees', type=int, help='number of MP trees passed to ML software', default=5, required=False)
         PARSER.add_argument('--init-software', type=str, help='software used to generate initial trees', default='mpboot', required=False)
@@ -32,6 +32,7 @@ class Args:
         PARSER.add_argument('--iqtree-options', type=str, help='give iq-tree any user specified options', default='', required=False)
         PARSER.add_argument('--verbose', type=bool, help='turn on verbose mode (debug logs)', default=False, action=argparse.BooleanOptionalAction, required=False)
         PARSER.add_argument('--config', type=str, help='path to config file from root directory', default='config/config.yaml', required=False)
+        PARSER.add_argument('--tnt-level', type=int, choices=range(11), help='level of TNT search. Use 0-2 for easy datasets, 2-5 for medium, >5 for difficult.', default=1, required=False)
 
         args = vars(PARSER.parse_args())
         self.MSA_INPUT_PATH = args['msa']
@@ -43,8 +44,19 @@ class Args:
         self.IQ_TREE_OPTIONS = args['iqtree_options']
         self.VERBOSE = args['verbose']
         self.CONFIG = Config(args['config']).config
+        self.TNT_LEVEL = args['tnt_level']
+        self.TNT_HITS = (1+args['tnt_level'])//2
+        if self.TNT_HITS == 0:
+            self.TNT_HITS == 1
 
         if args['max_parallel'] is True:
             self.HARDWARE = cpu_count()
         else:
             self.HARDWARE = args['parallel']
+
+        if args['init_software'] == 'lvb':
+            self.MP_OUT_PREFIX, self.MP_OUT_SUFFIX = " -o tree.",".treefile"
+        elif args['init_software'] == 'tnt':
+            self.MP_OUT_PREFIX, self.MP_OUT_SUFFIX = "tree.",".treefile"
+        else: self.MP_OUT_PREFIX, self.MP_OUT_SUFFIX = " -pre tree.",""
+            

@@ -11,9 +11,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-def GenerateMPBootCommand(initial_software: str, msa_path: str) -> str:
-    software_path = f'{initial_software} '
-    pass_msa_path = "-s " + msa_path
-    command = software_path + pass_msa_path
+from utils import DetectFileFormat
 
+def GenerateLVBCommand(initial_software: str, msa_path: str) -> str:
+    software_path = f'{initial_software} '
+    pass_msa_path = "-i " + msa_path
+    p_threads = 1
+    msa_format = DetectFileFormat(msa_path)
+
+    command = software_path + pass_msa_path + ' -f ' + msa_format + ' -p ' + str(p_threads)
+    
     return command

@@ -14,7 +14,7 @@
 from log import LOG
 
 def IqtreeEvaluateTreesCommand(msa_path: str, cores: int) -> str:
-    iqtree_path = "./lib/iqtree "
+    iqtree_path = "iqtree2 "
     pass_msa = "-s " + msa_path
     pass_treefile = " -z initial_trees.treefile"
     no_search = " -n 0"
@@ -28,7 +28,7 @@ def IqtreeEvaluateTreesCommand(msa_path: str, cores: int) -> str:
 def IqtreeLikelihoodAnalysis(msa_path: str, cores: int, iqtree_options: str) -> str:
     likelihood_command = ""
 
-    iqtree_path = "./lib/iqtree "
+    iqtree_path = "iqtree2 "
     pass_msa = "-s " + msa_path
     pass_treefile = " -t initial_trees_best.treefile"
     parallel = " -nt " + str(cores)

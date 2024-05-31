@@ -19,6 +19,7 @@ from initial_trees import InitialTrees
 from print import Print
 from refine_trees import RefineTrees
 from log import LOG
+from tnt import TNT_input
 
 class Physt:
     def __init__(self) -> None:
@@ -45,5 +46,10 @@ class Physt:
         os.system(f'mv physt.log parsimony.treefile {self.args.MSA_INPUT_PATH}.* {self.args.TIMESTAMP}')
         os.system(f'rm tree.* initial_trees*')
 
+        if self.args.MP_SOFTWARE == 'tnt':
+            tnt_input = TNT_input(self.args.MSA_INPUT_PATH)
+            os.system(f'rm {tnt_input}')
+            os.system(f'mv tnt.log {self.args.TIMESTAMP}')
+            
         if self.args.VERBOSE is True:
             LOG.info('Run completed')

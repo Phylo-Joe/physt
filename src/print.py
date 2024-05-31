@@ -47,7 +47,7 @@ class Print:
 
     def PrintHeader(self) -> None:
         LOG.info(f'PHYST (v{self._physt_version}, {self._release_date} {self._release_year}) Built for {self._operating_system}')
-        LOG.info('Developed by Joseph Guscott,')
+        LOG.info('Developed by Joseph Guscott & David Bunn')
         LOG.info('Barker Lab,')
         LOG.info('School of Biological Science')
         LOG.info('University of Edinburgh')
@@ -71,6 +71,7 @@ class Print:
         LOG.info(f'Start time: {self._timestamp}')
         print('')
         LOG.info('MPBoot provided by Hoang, et al., 2018; https://doi.org/10.1186/s12862-018-1131-3')
+        LOG.info('LVB provided by Barker, 2004; https://doi.org/10.1093/bioinformatics/btg402')
         LOG.info('IQ-Tree provided by Minh, et al., 2020; https://doi.org/10.1093/molbev/msaa015')
         print('')
 
