@@ -1,10 +1,5 @@
 ---
 physt:
-  version: 1.4.0
-  releaseDate: 'March'
-  releaseYear: '2024'
-
-operatingSystem:
-  linux: 'Linux x64-bit'
-  macos: 'MacOS x64-bit'
-  windows: 'Windows x64-bit'
+  version: "1.4.0"
+  releaseDate: "March"
+  releaseYear: "2024"

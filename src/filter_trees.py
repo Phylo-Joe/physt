@@ -11,75 +11,84 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
 import itertools
 import linecache
-
-from iqtree import IqtreeEvaluateTreesCommand
-from print import Print
-
-from log import LOG
-
+import os
 import re
 
+from iqtree import IqtreeEvaluateTreesCommand
+from log import LOG
+from print import Print
+
+
 class FilterTrees:
-    def __init__(self, MSA_INPUT_PATH, HARDWARE, NUM_MP_TREES) -> None:
+    def __init__(self, MSA_INPUT_PATH: str, HARDWARE: int, NUM_MP_TREES: int) -> None:
         self.MSA_INPUT_PATH = MSA_INPUT_PATH
         self.HARDWARE = HARDWARE
         self.NUM_MP_TREES = NUM_MP_TREES
         self.FilterInitialTrees()
 
     def FilterInitialTrees(self) -> None:
-        evaluate_command = IqtreeEvaluateTreesCommand(self.MSA_INPUT_PATH, self.HARDWARE)
+        evaluate_command = IqtreeEvaluateTreesCommand(
+            self.MSA_INPUT_PATH, self.HARDWARE
+        )
+        print("EVALUATE_COMMAND: %s", evaluate_command)
         os.system(evaluate_command)
         best_trees_dict = self.GetBestTreesDictionary()
 
-        best_tree_numbers = dict(itertools.islice(best_trees_dict.items(), self.NUM_MP_TREES))
+        best_tree_numbers = dict(
+            itertools.islice(best_trees_dict.items(), self.NUM_MP_TREES)
+        )
 
-        LOG.info('Highest scoring likelihood trees:')
+        print(type(best_tree_numbers))
+        print(f"best_tree_numbers: {best_tree_numbers}")
+
+        LOG.info("Highest scoring likelihood trees:")
 
         Print.PrintDictionary(best_tree_numbers)
 
         self.WriteBestInitialTreesFile(best_tree_numbers)
 
-    def GetBestTreesDictionary(self) -> dict:
+    def GetBestTreesDictionary(self) -> dict[str, float]:
         file = self.MSA_INPUT_PATH + ".log"
+        print("LOGFILE: %s", file)
         best_trees_dict = {}
-        iqtree_regex = '^(Tree \d+) \/ (LogL:) (-\d*.\d*)$'
+        iqtree_regex = r"^(Tree \d+) \/ (LogL:) (-\d*.\d*)$"
 
-        with open(file, "r") as fp:
+        with open(file, "r", encoding="utf-8") as fp:
             for line in fp:
                 tree_search = re.search(iqtree_regex, line)
                 if tree_search is not None:
-                    best_trees_dict[str(tree_search.group(1))] = float(tree_search.group(3))
+                    best_trees_dict[str(tree_search.group(1))] = float(
+                        tree_search.group(3)
+                    )
 
-        best_trees_dict = {k: v for k, v in sorted(best_trees_dict.items(), key=lambda item: item[1], reverse=True)}
+        best_trees_dict = dict(
+            sorted(best_trees_dict.items(), key=lambda item: item[1], reverse=True)
+        )
 
         return best_trees_dict
 
-    def WriteBestInitialTreesFile(self, best_trees_number: dict) -> None:
+    def WriteBestInitialTreesFile(self, best_trees_number: dict[str, float]) -> None:
         file = "initial_trees.treefile"
-        line_numbers = []
         lines = []
-        dict_list = []
+        line_numbers: list[int] = []
 
         for key in best_trees_number:
-            dict_list.append(key[-1])
+            tree_number = int(key.split()[-1])
+            line_numbers.append(tree_number)
 
-        for i in range(self.NUM_MP_TREES):
-            line_numbers.append(int(dict_list[i]))
-
-        for i in line_numbers:
-            x = linecache.getline(file, i).strip()
+        for line_number in line_numbers:
+            x = linecache.getline(file, line_number).strip()
             lines.append(x)
 
-        with open('initial_trees_best.treefile', 'w') as fp:
-            for i in lines:
-                fp.write("%s\n" % i)
+        with open("initial_trees_best.treefile", "w", encoding="utf-8") as fp:
+            for line in lines:
+                fp.write(f"{line}\n")
 
         for i in range(self.NUM_MP_TREES):
             j = str(i + 1)
             file_name = "initial_trees_best_" + j + ".treefile"
 
-            with open(file_name, 'w') as fp:
-                fp.write("%s\n" % lines[i])
+            with open(file_name, "w", encoding="utf-8") as fp:
+                fp.write(f"{lines[i]}\n")

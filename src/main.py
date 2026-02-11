@@ -13,21 +13,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
 import traceback
 
-from log import Log, LOG
+from log import LOG, Log
 from physt import Physt
 
-def main():
+
+# pylint: disable=broad-exception-caught
+def main() -> None:
     Log()
     try:
         physt = Physt()
         physt.execute()
 
     except Exception as err:
-        LOG.critical(f'{type(err).__name__}: {err}')
+        LOG.critical("%s: %s", type(err).__name__, err)
         traceback.print_tb(err.__traceback__)
-        exit(1)
+        sys.exit(1)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

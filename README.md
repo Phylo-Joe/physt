@@ -4,11 +4,11 @@
 
 The **PHY**logenetic **S**tarting **T**ree (PHYST) pipeline uses popular phylogenetic software packages to pass optimised parsimony trees to likelihood software.
 
-PHYST is currently under development at the University of Edinburgh.
+PHYST is currently under development at the University.
 
 Current developers:
-- [Joseph Guscott](https://github.com/josephguscott)
-- [Daniel Barker](https://www.ed.ac.uk/profile/daniel-barker)
+- Joe
+- Daniel
 
 ## Getting Started
 
@@ -53,4 +53,4 @@ With options to be passed enclosed by quotations.
 APACHE License v2 (January 2004)
 
 # Contact
-Please direct any questions about PHYST to Joseph Guscott joseph.guscott@ed.ac.uk or Daniel Barker at daniel.barker@ed.ac.uk
+Please direct any questions about PHYST to Joe or Daniel.

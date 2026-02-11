@@ -11,23 +11,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import time
 import os
+import time
 
 from args import Args
 from initial_trees import InitialTrees
+from log import LOG
 from print import Print
 from refine_trees import RefineTrees
-from log import LOG
 
+
+# pylint: disable=too-few-public-methods
 class Physt:
     def __init__(self) -> None:
         self.args = Args()
 
-    def execute(self):
-        os.system(f'mkdir {self.args.TIMESTAMP}')
+    def execute(self) -> None:
+        os.system(f"mkdir {self.args.TIMESTAMP}")
         if self.args.VERBOSE is True:
-            LOG.info('Starting in debug mode')
+            LOG.info("Starting in debug mode")
 
         Print(self.args)
 
@@ -42,8 +44,14 @@ class Physt:
         runtime = program_end - program_start
         Print.PrintRuntime(runtime)
 
-        os.system(f'mv physt.log parsimony.treefile {self.args.MSA_INPUT_PATH}.* {self.args.TIMESTAMP}')
-        os.system(f'rm tree.* initial_trees*')
+        os.system(
+            (
+                "mv physt.log parsimony.treefile "
+                f"{self.args.MSA_INPUT_PATH}.* "
+                f"{self.args.TIMESTAMP}"
+            )
+        )
+        os.system("rm tree.* initial_trees*")
 
         if self.args.VERBOSE is True:
-            LOG.info('Run completed')
+            LOG.info("Run completed")

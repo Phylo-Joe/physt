@@ -13,12 +13,15 @@
 
 import os
 import re
-from iqtree import IqtreeLikelihoodAnalysis
 
+from args import Args
+from iqtree import IqtreeLikelihoodAnalysis
 from log import LOG
 
+
+# pylint: disable=too-few-public-methods
 class RefineTrees:
-    def __init__(self, args) -> None:
+    def __init__(self, args: Args) -> None:
         self.MSA_INPUT_PATH = args.MSA_INPUT_PATH
         self.HARDWARE = args.HARDWARE
         self.IQ_TREE_OPTIONS = args.IQ_TREE_OPTIONS
@@ -27,15 +30,17 @@ class RefineTrees:
     def RefineInitialTrees(self) -> None:
         treefile = self.MSA_INPUT_PATH + ".treefile"
         logfile = self.MSA_INPUT_PATH + ".log"
-        best_score_regex = '^(BEST SCORE FOUND) (:) (-\d*.\d*)$'
+        best_score_regex = r"^(BEST SCORE FOUND) (:) (-\d*.\d*)$"
 
-        refine_tree_command = IqtreeLikelihoodAnalysis(self.MSA_INPUT_PATH, self.HARDWARE, self.IQ_TREE_OPTIONS)
+        refine_tree_command = IqtreeLikelihoodAnalysis(
+            self.MSA_INPUT_PATH, self.HARDWARE, self.IQ_TREE_OPTIONS
+        )
         os.system(refine_tree_command)
 
-        with open(logfile, "r") as fp:
+        with open(logfile, "r", encoding="utf-8") as fp:
             lines = fp.readlines()
             for line in lines:
                 tree_search = re.search(best_score_regex, line)
                 if tree_search is not None:
-                    LOG.info(f'Refined ML tree score: {tree_search.group(3)}')
-                    LOG.info(f'Refined ML treefile: {treefile}')
+                    LOG.info("Refined ML tree score: %s", tree_search.group(3))
+                    LOG.info("Refined ML treefile: %s", treefile)

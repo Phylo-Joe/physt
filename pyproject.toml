@@ -1,0 +1,78 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "penrose"
+version = "0.1.0"
+description = "Penrose CLI tool"
+requires-python = ">=3.10"
+dependencies = [
+    "pyyaml>=6.0,<7",
+]
+
+[project.scripts]
+penrose = "penrose.__main__:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.black]
+line-length = 88
+target-version = ["py312"]
+skip-string-normalization = false
+
+[tool.mypy]
+mypy_path = "src"
+python_version = "3.12"
+disallow_untyped_defs = true
+warn_return_any = true
+warn_unused_ignores = true
+ignore_missing_imports = true
+
+[tool.pylint]
+init-hook = 'import sys; sys.path.append("src")'
+max-line-length = 88
+disable = [
+  "missing-module-docstring",
+  "missing-class-docstring",
+  "missing-function-docstring",
+
+  "invalid-name",
+  "disallowed-name",
+
+  "unused-import",
+  "unused-argument",
+
+  "too-many-arguments",
+  "too-many-locals",
+  "too-many-branches",
+
+  "redefined-outer-name",
+  "import-outside-toplevel",
+]
+
+[project.optional-dependencies]
+dev = [
+  "black",
+  "isort",
+  "mypy",
+  "pylint",
+  "pre-commit",
+  "pytest",
+  "pytest-cov"
+]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+src_paths = ["src"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-ra -q --cov=penrose --cov-report=term-missing"
